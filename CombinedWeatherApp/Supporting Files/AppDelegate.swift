@@ -35,6 +35,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
     // Called when a new scene session is being created.
     // Use this method to select a configuration to create the new scene with.
+    /// Jell: 새로운 Scene이 생길 때 반환하는 함수. iOS 13 SDK에서 SceneDelegate를 활용하기 위해 필요함.
+    /// 이를 사용하지 않기 위해서는 (기존의 window로 사용하기 위해서는) info.plist의 Application Scene Manifest를 지우고, SceneDelegate.swift를 지우고, 현재 두 개의 메서드를 삭제하면 됨.
     return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+  }
+  
+  func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
+    /// Jell: app switcher를 통해 scene을 닫을 때 호출
   }
 }
