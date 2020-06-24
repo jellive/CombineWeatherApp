@@ -26,12 +26,18 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
+/**
+ Jell: Scene -> windows + ViewController's'가 들어있음. 이는 각 scene에 해당하는 UIWindowSceneDelegate 객체를 가지고 있고, 이는 UIKit과 앱 간의 상호 작용을 조정하는 데 사용.
+        결과적으로 하나의 앱은 여러 scene과 scene delegate 객체를 동시에 활성화 할 수 있음.
+ */
+
 import UIKit
 import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   var window: UIWindow?
   
+  /// UISession: UIKie이 생성하며, 고유한 식별자와 구성 세부사항이 들어있음. 
   func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
     // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
     // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
