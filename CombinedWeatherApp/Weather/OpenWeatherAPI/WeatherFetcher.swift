@@ -30,6 +30,10 @@ import Foundation
 import Combine
 
 protocol WeatherFetchable {
+  /// 프로토콜 선언. 프로토콜은 interface라 보면 됨.
+  
+  /// Publisher는 Just, Empty, AnyPublisher 등이 있으며, 시간이 지남에 따라 값의 시퀀스를 전달할 수 있다. event-driven임. RxSwift에는 비슷한 친구로 Observable가 있다.
+  /// AnyPublisher는 타입을 지운 Publisher이다.
   func weeklyWeatherForecast (
     forCity city: String
   ) -> AnyPublisher<WeeklyForecastResponse, WeatherError>
@@ -50,6 +54,7 @@ class WeatherFetcher {
 
 // MARK: - WeatherFetchable
 extension WeatherFetcher: WeatherFetchable {
+  /// implement.
   func weeklyWeatherForecast(forCity city: String) -> AnyPublisher<WeeklyForecastResponse, WeatherError> {
     return forecast(with: makeWeeklyForecastComponents(withCity: city))
   }
@@ -77,6 +82,41 @@ extension WeatherFetcher: WeatherFetchable {
 
 // MARK: - OpenWeatherMap API
 private extension WeatherFetcher {
+  /// extension:  Obj-C의 category와 유사함. 차이점은 extension이 이름을 가지지 않는다는 점.
+  // 다음은 예시.
+  //  private extension Double {
+  //    var km: Double { return self * 1_000.0 }
+  //    var m: Double { return self }
+  //    var cm: Double { return self / 100.0 }
+  //    var mm: Double { return self / 1_000.0 }
+  //
+  //  }
+  //  extension Rect {
+  //    init(center: Point, size: Size) {
+  //      let originX = center.x - (size.width / 2)
+  //      let originY = center.y - (size.height / 2)
+  //      self.init(origin: Point(x: originX, y: originY), size: size)
+  //    }
+  //  }
+  //  extension Int {
+  //    enum Kind {
+  //      case Negative, Zero, Positive
+  //    }
+  //    var kind: Kind {
+  //      switch self {
+  //      case 0:
+  //        return .Zero
+  //      case let x where x > 0:
+  //        return .Positive
+  //      default:
+  //        return .Negative
+  //      }
+  //    }
+  //  }
+  //
+  //  print(0.kind)
+  
+  
   struct OpenWeatherAPI {
     static let scheme = "https"
     static let host = "api.openweathermap.org"

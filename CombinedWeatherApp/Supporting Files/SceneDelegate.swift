@@ -37,7 +37,7 @@ import SwiftUI
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   var window: UIWindow?
   
-  /// UISession: UIKie이 생성하며, 고유한 식별자와 구성 세부사항이 들어있음. 
+  /// UISession: UIKie이 생성하며, 고유한 식별자와 구성 세부사항이 들어있음.
   func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
     // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
     // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.

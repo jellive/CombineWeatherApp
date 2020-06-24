@@ -32,11 +32,11 @@ import Combine
 class WeeklyWeatherViewModel: ObservableObject, Identifiable {
   @Published var city: String = ""
   
-  @Published  var dataSource: [DailyWeatherRowViewModel] = []
+  @Published var dataSource: [DailyWeatherRowViewModel] = []
   
   private let weatherFetcher: WeatherFetchable
   
-  private var disposables = Set<AnyCancellable>()
+  private var disposables = Set<AnyCancellable>() /// 그냥 Cancellable로 하면 Scene이 사라져도 스트림은 남아있다. AnyCancellable로 하면 deinit시 같이 사라짐.  Cancellable은 JS의 PromiseLike형이라고 보면 됨.
   
   init(weatherFetcher: WeatherFetchable, scheduler: DispatchQueue = DispatchQueue(label: "WeatherViewModel")) {
     self.weatherFetcher = weatherFetcher
@@ -44,31 +44,32 @@ class WeeklyWeatherViewModel: ObservableObject, Identifiable {
     
     /** original code
      _ = $city
-       .dropFirst(1)
-       .debounce(for: .seconds(0.5), scheduler: scheduler)
-       .sink(receiveValue: fetchWeather(forCity:))
-     **/
+     .dropFirst(1)
+     .debounce(for: .seconds(0.5), scheduler: scheduler)
+     .sink(receiveValue: fetchWeather(forCity:))
+     */
     /// modified code
-    $city
-      .dropFirst()
-      .debounce(for: .seconds(0.5), scheduler: scheduler)
-      .sink(receiveValue: fetchWeather(forCity:))
-      .store(in: &disposables)
+    $city /// $가 붙으면 값을 @Published, @State등을 수정가능하게 Binding하여 사용할 수 있다. 양방향 바인딩이라 생각하면 됨.
+      .dropFirst() /// array에 있는 메소드, 인자값을 넣어서 해당부분까지 제거 가능.
+      .debounce(for: .seconds(0.5), scheduler: scheduler) /// 0.5초마다 scheduler 실행. 여기서는 weatherfetcher를 세션으로하는 친구를 실행한다.
+      .sink(receiveValue: fetchWeather(forCity:)) /// 구독 시작 후 받은 데이터를 fetchWeather로 처리하고
+      .store(in: &disposables) /// disposables에 저장한다.
   }
   
   func fetchWeather(forCity city: String) {
     weatherFetcher.weeklyWeatherForecast(forCity: city)
       .map {response in
-        response.list.map(DailyWeatherRowViewModel.init)
+        response.list.map(DailyWeatherRowViewModel.init) /// 형변환
       }
       .map(Array.removeDuplicates)
       .receive(on: DispatchQueue.main)
-      .sink(receiveCompletion: { [weak self] value in
+      .sink(receiveCompletion: {
+        [weak self] value in
         guard let self = self else {return}
         switch value {
-        case .failure:
+        case .failure: /// Promise.reject
           self.dataSource = []
-        case .finished:
+        case .finished: /// Promise.then
           break
         }
       }, receiveValue: {[weak self] forecast in
